@@ -1,0 +1,55 @@
+﻿/* Define the keyframes for dynamic color change */
+@keyframes colorChange {
+    0% {
+        background-color: #1f2f20; 
+    }
+
+    10% {
+        background-color: #42381c; 
+    }
+
+    20% {
+        background-color: #2d0f31;
+    }
+
+    30% {
+        background-color: #053836;
+    }
+
+    40% {
+        background-color: #363a70; 
+    }
+
+    50% {
+        background-color: #000000; 
+    }
+
+    60% {
+        background-color: #51613f; 
+    }
+
+    70% {
+        background-color: #3b070e; 
+    }
+
+    80% {
+        background-color: #384b49; 
+    }
+
+    90% {
+        background-color: #642808; 
+    }
+
+    100% {
+        background-color: #2d0f31; 
+    }
+}
+
+/* Apply the animation to the body */
+body {
+    animation: colorChange 10s infinite; /* Change colors every 10 seconds */
+    transition: background-color 1s ease-in-out;
+}
+
+
+

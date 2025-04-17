@@ -1,0 +1,222 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<head>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts (Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            /* Removed padding-top: 80px; to fix space above navbar */
+            margin: 0; /* Added to ensure no default margins */
+        }
+
+        .categories-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .categories-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            animation: fadeInDown 0.8s ease-in-out;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .category-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .category-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            }
+
+            .category-card img {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                border-radius: 15px 15px 0 0;
+                transition: transform 0.3s ease;
+            }
+
+            .category-card:hover img {
+                transform: scale(1.05);
+            }
+
+        .category-caption {
+            padding: 15px;
+            text-align: center;
+        }
+
+            .category-caption p {
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin: 0;
+                color: #fff;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            }
+
+        .category-link {
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Animations */
+        @@keyframes fadeInDown {
+            0%
+
+        {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* Responsive Adjustments */
+        @@media (max-width: 576px) {
+            .category-grid
+
+        {
+            grid-template-columns: repeat(2, 1fr); /* Two columns on mobile */
+            gap: 15px;
+        }
+
+        .categories-title {
+            font-size: 1.75rem;
+        }
+
+        .category-card img {
+            height: 140px;
+        }
+
+        .category-caption p {
+            font-size: 1rem;
+        }
+
+        }
+
+        @@media (min-width: 577px) and (max-width: 768px) {
+            .category-grid
+
+        {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .categories-title {
+            font-size: 2rem;
+        }
+
+        .category-card img {
+            height: 150px;
+        }
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="categories-container">
+        <h1 class="categories-title">@ViewData["Title"]</h1>
+
+        <div class="category-grid">
+            <!-- Pots -->
+            <a href="/Products/Pots" class="category-link">
+                <div class="category-card">
+                    <img src="@Url.Content("~/images/pots1.jpg")" alt="Pots">
+                    <div class="category-caption">
+                        <p>Pots</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Air Fryers -->
+            <a href="/Products/AirFryers" class="category-link">
+                <div class="category-card">
+                    <img src="@Url.Content("~/images/airfryer1.jpg")" alt="Air Fryers">
+                    <div class="category-caption">
+                        <p>Air Fryers</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Pressure Cookers -->
+            <a href="/Products/PressureCookers" class="category-link">
+                <div class="category-card">
+                    <img src="@Url.Content("~/images/PC1.jpg")" alt="Pressure Cookers">
+                    <div class="category-caption">
+                        <p>Pressure Cookers</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Dish Racks -->
+            <a href="/Products/DishRacks" class="category-link">
+                <div class="category-card">
+                    <img src="@Url.Content("~/images/dishrack1.jpg")" alt="Dish Racks">
+                    <div class="category-caption">
+                        <p>Dish Racks</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Cutleries -->
+            <a href="/Products/Cutleries" class="category-link">
+                <div class="category-card">
+                    <img src="@Url.Content("~/images/cutlery2.jpg")" alt="Cutleries">
+                    <div class="category-caption">
+                        <p>Cutleries</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Blenders -->
+            <a href="/Products/Blenders" class="category-link">
+                <div class="category-card">
+                    <img src="@Url.Content("~/images/blender1.jpg")" alt="Blenders">
+                    <div class="category-caption">
+                        <p>Blenders</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>

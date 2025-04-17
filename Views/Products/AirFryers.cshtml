@@ -1,0 +1,357 @@
+﻿@model List<Product>
+@{
+    ViewData["Title"] = "Air-Fryers";
+}
+
+<div class="container-fluid px-4 py-5 premium-container">
+    <h1 class="text-center mb-5 display-3 fw-bold text-white premium-title">Air-Fryers</h1>
+
+    <!-- Back Button Positioned Absolutely at Top Left -->
+    <a href="javascript:history.back()" class="back-button-absolute">
+        <i class="fas fa-arrow-left me-2"></i>Back
+    </a>
+
+    <div class="product-wrapper">
+        <div class="product-carousel">
+            @foreach (var product in Model)
+            {
+                <div class="product-card">
+                    <div class="card premium-card h-100 text-white overflow-hidden">
+                        <div class="card-img-wrapper">
+                            <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name">
+                            <div class="overlay"></div>
+                        </div>
+                        <div class="card-body d-flex flex-column p-4">
+                            <h5 class="card-title fs-3 fw-bold mb-3 text-uppercase">@product.Name</h5>
+                            <ul class="list-unstyled flex-grow-1 premium-details">
+                                <li class="mb-2">
+                                    <span class="fw-semibold text-muted">Brand:</span>
+                                    <span class="text-white premium-value">@product.Brand</span>
+                                </li>
+                                <li class="mb-2">
+                                    <span class="fw-semibold text-muted">Price:</span>
+                                    <span class="text-success fw-bold premium-value">₦@product.Price.ToString("N2")</span>
+                                </li>
+                            </ul>
+                            <button class="btn premium-btn w-100 mt-auto add-to-cart"
+                                    data-id="@product.Id"
+                                    data-category="airfryer">
+                                <span class="btn-text">Add to Cart</span>
+                                <i class="fas fa-shopping-cart ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            function updateCartCount() {
+                $.get('/ShoppingCart/GetCartCount', function (data) {
+                    const cartCount = $('#cart-count');
+                    const floatingCount = $('#floating-cart-count');
+                    cartCount.text(data.count).addClass('cart-bounce');
+                    floatingCount.text(data.count).addClass('cart-bounce');
+                    setTimeout(() => {
+                        cartCount.removeClass('cart-bounce');
+                        floatingCount.removeClass('cart-bounce');
+                    }, 400);
+                }).fail(function () {
+                    console.error("Failed to update cart count.");
+                });
+            }
+
+            $('.add-to-cart').click(function (e) {
+                e.preventDefault();
+                const $button = $(this);
+                const productId = parseInt($button.data('id'));
+                const category = "airfryer";
+
+                console.log("Attempting to add to cart:", { id: productId, category });
+
+                $button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Adding...');
+
+                $.ajax({
+                    url: '/ShoppingCart/AddToCart',
+                    type: 'POST',
+                    data: { id: productId, category: category },
+                    success: function (response) {
+                        console.log("Add to cart response:", response);
+                        if (response.success) {
+                            updateCartCount();
+                            $button.html('<i class="fas fa-check"></i> Added!').addClass('btn-success bounce-once').removeClass('btn-primary');
+                            setTimeout(() => {
+                                $button.removeClass('bounce-once');
+                            }, 500);
+                            setTimeout(() => {
+                                $button.html('<span class="btn-text">Add to Cart</span><i class="fas fa-shopping-cart ms-2"></i>')
+                                    .addClass('btn-primary').removeClass('btn-success').prop('disabled', false);
+                            }, 1500);
+                        } else {
+                            console.error('Error adding to cart:', response.message);
+                            alert('Error: ' + (response.message || 'Failed to add product to cart'));
+                            $button.html('<span class="btn-text">Add to Cart</span><i class="fas fa-shopping-cart ms-2"></i>')
+                                .prop('disabled', false);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Add to cart failed:", { status: status, error: error, response: xhr.responseText });
+                        let errorMessage = 'Failed to add to cart. Please try again.';
+                        try {
+                            const errorResponse = JSON.parse(xhr.responseText);
+                            if (errorResponse && errorResponse.message) errorMessage = errorResponse.message;
+                        } catch (e) {
+                            console.log("Could not parse error response");
+                        }
+                        alert('Error: ' + errorMessage);
+                        $button.html('<span class="btn-text">Add to Cart</span><i class="fas fa-shopping-cart ms-2"></i>')
+                            .prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #0f0f0f, #1f1f1f);
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+        overflow-x: hidden;
+        position: relative; /* Needed for absolute positioning */
+    }
+
+    .premium-container {
+        padding-top: 80px; /* Space for fixed navbar */
+        position: relative; /* Needed for absolute positioning */
+    }
+
+    /* Absolute Positioned Back Button */
+    .back-button-absolute {
+        position: absolute;
+        top: 85px; /* Below navbar */
+        left: 20px;
+        z-index: 1000;
+        border-radius: 30px;
+        padding: 8px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        background-color: rgba(0, 0, 0, 0.3);
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+        .back-button-absolute:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: white;
+        }
+
+    .premium-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        background: linear-gradient(90deg, #00d4ff, #007bff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        animation: fadeInDown 1s ease-in-out;
+    }
+
+    .product-wrapper {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 40px; /* Space for possible buttons */
+    }
+
+    .product-carousel {
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        gap: 1rem;
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .product-card {
+        flex: 0 0 auto;
+        width: 250px;
+    }
+
+    .premium-card {
+        position: relative;
+        background: linear-gradient(135deg, rgba(40, 40, 40, 0.9), rgba(20, 20, 20, 0.9));
+        border-radius: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        overflow: hidden;
+    }
+
+        .premium-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+        }
+
+    .card-img-wrapper {
+        position: relative;
+        height: 250px;
+        overflow: hidden;
+    }
+
+    .card-img-top {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .premium-card:hover .card-img-top {
+        transform: scale(1.1);
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7));
+        transition: opacity 0.4s ease;
+    }
+
+    .premium-card:hover .overlay {
+        opacity: 0.8;
+    }
+
+    .card-body {
+        padding: 25px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.3;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .premium-details li {
+        font-size: 1.1rem;
+        line-height: 1.8;
+    }
+
+    .text-muted {
+        color: #a0a0a0 !important;
+    }
+
+    .premium-value {
+        font-size: 1.2rem;
+        margin-left: 8px;
+    }
+
+    .text-success.premium-value {
+        background: linear-gradient(90deg, #28a745, #34d058);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .premium-btn {
+        padding: 12px 25px;
+        border-radius: 30px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        background: linear-gradient(90deg, #007bff, #00d4ff);
+        border: none;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s ease;
+    }
+
+        .premium-btn:hover {
+            background: linear-gradient(90deg, #0056b3, #00b7ff);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.5);
+        }
+
+        .premium-btn.btn-success {
+            background: linear-gradient(90deg, #28a745, #34d058);
+        }
+
+            .premium-btn.btn-success:hover {
+                background: linear-gradient(90deg, #218838, #2cc24a);
+            }
+
+        .premium-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .premium-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+    @@keyframes fadeInDown {
+        0% {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .premium-title {
+            font-size: 2.5rem;
+        }
+
+        .back-button-absolute {
+            top: 7px; /* Adjust for mobile navbar */
+            left: -20px;
+            padding: 6px 15px;
+            font-size: 0.9rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+        }
+
+        .card-img-wrapper {
+            height: 180px;
+        }
+
+        .premium-details li {
+            font-size: 0.95rem;
+        }
+
+        .premium-value {
+            font-size: 1rem;
+        }
+    }
+</style>

@@ -1,0 +1,354 @@
+﻿@model List<DUTEG.Models.CartItem>
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<div class="container py-5">
+    <h1 class="text-center mb-5 display-4 fw-bold text-white animate-header">Cart</h1>
+
+    @if (Model.Any())
+    {
+        <div class="cart-container" id="cart-items-container">
+            <div class="row g-4">
+                @foreach (var cartItem in Model)
+                {
+                    <div class="col-12 col-md-6 col-lg-4" id="cart-item-@cartItem.Product.Id">
+                        <div class="card h-100 bg-dark text-white shadow-lg border-0 modern-card">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="@cartItem.Product.ImageUrl" alt="@cartItem.Product.Name" class="cart-img rounded me-3">
+                                    <h5 class="card-title mb-0 fw-bold">@cartItem.Product.Name</h5>
+                                </div>
+                                <p class="text-muted mb-2">Price: ₦@cartItem.Product.Price.ToString("N2")</p>
+                                <div class="quantity-controls d-flex align-items-center mb-3">
+                                    <button class="btn btn-sm btn-outline-danger decrease-qty" data-id="@cartItem.Product.Id">-</button>
+                                    <span id="qty-@cartItem.Product.Id" class="mx-3 fw-semibold">@cartItem.Quantity</span>
+                                    <button class="btn btn-sm btn-outline-success increase-qty" data-id="@cartItem.Product.Id">+</button>
+                                </div>
+                                <p class="fw-bold text-success mb-0">Total: ₦<span id="item-total-@cartItem.Product.Id">@((cartItem.Product.Price * cartItem.Quantity).ToString("N2"))</span></p>
+                            </div>
+                            <div class="card-footer bg-transparent border-0 text-end">
+                                <button class="btn btn-danger btn-sm remove-from-cart modern-btn" data-id="@cartItem.Product.Id">
+                                    <i class="fas fa-trash me-2"></i> Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-end">
+                    <h3 class="fw-bold text-white">Total: <span class="text-success">₦<span id="cart-total">@(Model.Sum(c => c.Product.Price * c.Quantity).ToString("N2"))</span></span></h3>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-4">
+                <a href="/Home/Products" id="continue-shopping" class="btn btn-outline-light modern-btn">
+                    <i class="fas fa-arrow-left me-2"></i> Continue Shopping
+                </a>
+                <button id="clear-cart" class="btn btn-warning modern-btn">Clear Cart</button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div id="empty-cart-message" class="text-center py-5">
+            <div class="alert alert-dark bg-dark text-white shadow-lg border-0 modern-empty-cart">
+                <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
+                <h3 class="fw-bold">Your Cart is Empty!</h3>
+                <p class="text-muted">Looks like you haven't added anything yet.</p>
+                <a href="/Home/Products" class="btn btn-primary modern-btn mt-3">Start Shopping Now</a>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- JavaScript for AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        function formatNumberWithCommas(num) {
+            return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function updateCartCount() {
+            $.get('/ShoppingCart/GetCartCount', function (data) {
+                const cartCount = $('#cart-count');
+                const floatingCount = $('#floating-cart-count');
+                cartCount.text(data.count).addClass('cart-bounce');
+                floatingCount.text(data.count).addClass('cart-bounce');
+                setTimeout(() => {
+                    cartCount.removeClass('cart-bounce');
+                    floatingCount.removeClass('cart-bounce');
+                }, 400);
+            }).fail(function () {
+                console.error("Failed to update cart count.");
+            });
+        }
+
+        function updateCartTotals() {
+            let total = 0;
+            $('[id^="item-total-"]').each(function () {
+                total += parseFloat($(this).text().replace(/,/g, ''));
+            });
+            $('#cart-total').text(formatNumberWithCommas(total));
+        }
+
+        function checkEmptyCart() {
+            if ($('[id^="cart-item-"]').length === 0) {
+                $('#cart-items-container').replaceWith(
+                    '<div id="cart-items-container" class="text-center py-5">' +
+                    '<div class="alert alert-dark bg-dark text-white shadow-lg border-0 modern-empty-cart">' +
+                    '<i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>' +
+                    '<h3 class="fw-bold">Your Cart is Empty!</h3>' +
+                    '<p class="text-muted">Looks like you haven\'t added anything yet.</p>' +
+                    '<a href="/Home/Products" class="btn btn-primary modern-btn mt-3">Start Shopping Now</a>' +
+                    '</div></div>'
+                );
+                $('#continue-shopping, #clear-cart').hide();
+            } else {
+                $('#continue-shopping, #clear-cart').show();
+            }
+        }
+
+        $('.remove-from-cart').click(function () {
+            const productId = $(this).data('id');
+            $.post('/ShoppingCart/RemoveFromCart', { id: productId }, function (response) {
+                if (response.success) {
+                    $('#cart-item-' + productId).fadeOut(300, function () {
+                        $(this).remove();
+                        updateCartTotals();
+                        updateCartCount();
+                        checkEmptyCart();
+                    });
+                } else {
+                    alert("Error removing item from cart!");
+                }
+            }).fail(function () {
+                alert("Failed to communicate with the server.");
+            });
+        });
+
+        $(document).on('click', '.increase-qty', function () {
+            const productId = $(this).data('id');
+            $.post('/ShoppingCart/UpdateCart', { id: productId, change: 1 }, function (response) {
+                if (response.success) {
+                    $('#qty-' + productId).text(response.quantity);
+                    $('#item-total-' + productId).text(formatNumberWithCommas(response.itemTotal));
+                    updateCartTotals();
+                    updateCartCount();
+                }
+            }).fail(function () {
+                alert("Failed to update quantity.");
+            });
+        });
+
+        $(document).on('click', '.decrease-qty', function () {
+            const productId = $(this).data('id');
+            $.post('/ShoppingCart/UpdateCart', { id: productId, change: -1 }, function (response) {
+                if (response.success) {
+                    if (response.quantity > 0) {
+                        $('#qty-' + productId).text(response.quantity);
+                        $('#item-total-' + productId).text(formatNumberWithCommas(response.itemTotal));
+                        updateCartTotals();
+                        updateCartCount();
+                    } else {
+                        $('#cart-item-' + productId).fadeOut(300, function () {
+                            $(this).remove();
+                            updateCartTotals();
+                            updateCartCount();
+                            checkEmptyCart();
+                        });
+                    }
+                }
+            }).fail(function () {
+                alert("Failed to update quantity.");
+            });
+        });
+
+        $('#clear-cart').click(function () {
+            $.post('/ShoppingCart/ClearCart', function (response) {
+                if (response.success) {
+                    $('#cart-items-container').replaceWith(
+                        '<div id="cart-items-container" class="text-center py-5">' +
+                        '<div class="alert alert-dark bg-dark text-white shadow-lg border-0 modern-empty-cart">' +
+                        '<i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>' +
+                        '<h3 class="fw-bold">Your Cart is Empty!</h3>' +
+                        '<p class="text-muted">Looks like you haven\'t added anything yet.</p>' +
+                        '<a href="/Home/Products" class="btn btn-primary modern-btn mt-3">Start Shopping Now</a>' +
+                        '</div></div>'
+                    );
+                    $('#continue-shopping, #clear-cart').hide();
+                    updateCartCount();
+                } else {
+                    alert("Failed to clear cart.");
+                }
+            }).fail(function () {
+                alert("Failed to clear cart.");
+            });
+        });
+
+        checkEmptyCart();
+    });
+</script>
+
+<style>
+    body {
+        background-color: #1a1a1a;
+        color: white;
+        font-family: 'Poppins', sans-serif;
+        line-height: 1.6;
+    }
+
+    .animate-header {
+        animation: fadeInDown 0.8s ease-in-out;
+    }
+
+    .cart-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .modern-card {
+        background: linear-gradient(135deg, #2d2d2d 0%, #1f1f1f 100%);
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .modern-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+    .cart-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .quantity-controls .btn {
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+        .quantity-controls .btn:hover {
+            transform: scale(1.1);
+        }
+
+    .modern-btn {
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-light {
+        border: 2px solid #fff;
+    }
+
+        .btn-outline-light:hover {
+            background-color: #fff;
+            color: #1a1a1a;
+        }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+    }
+
+        .btn-danger:hover {
+            background-color: #b02a37;
+            transform: translateY(-2px);
+        }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border: none;
+        color: #1a1a1a;
+    }
+
+        .btn-warning:hover {
+            background-color: #d39e00;
+            transform: translateY(-2px);
+        }
+
+    .modern-empty-cart {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 30px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #2d2d2d 0%, #1f1f1f 100%);
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @@keyframes fadeInDown {
+        0%
+
+    {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    @@keyframes fadeIn {
+        0%
+
+    {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+
+    }
+
+    @@keyframes bounce {
+        0%
+
+    {
+        transform: scale(1);
+    }
+
+    30% {
+        transform: scale(1.3);
+    }
+
+    60% {
+        transform: scale(0.9);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+    }
+
+    .cart-bounce {
+        animation: bounce 0.4s ease;
+    }
+</style>

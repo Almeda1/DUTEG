@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "About Us";
+}
+
+<head>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts (Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="about-us">
+    <div class="container py-5 modern-container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card modern-card shadow-lg">
+                    <div class="card-body p-5 text-center text-white">
+                        <h1 class="fw-bold modern-title mb-4">About Us</h1>
+                        <p class="modern-text">
+                            We offer top-quality household products designed to meet your needs. Explore our platform to make the best choices for your home.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+<style>
+    body.about-us {
+        background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+        min-height: 100vh;
+        /* Removed padding-top: 80px; to fix space above navbar */
+        margin: 0; /* Added to ensure no default margins */
+    }
+
+    .modern-container {
+        max-width: 1400px;
+    }
+
+    .modern-card {
+        background: rgba(34, 34, 34, 0.95); /* Slightly lighter than body */
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .modern-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+    .modern-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        color: #fff;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .modern-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #d0d0d0;
+    }
+
+        .modern-text .text-primary {
+            color: #4a90e2 !important; /* Softer blue for emphasis */
+        }
+
+    .modern-subtext {
+        font-size: 1rem;
+        color: #a0a0a0;
+        line-height: 1.6;
+    }
+
+    .modern-btn {
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        background-color: #4a90e2;
+        border: none;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+        .modern-btn:hover {
+            background-color: #357abd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+
+    @@media (max-width: 768px) {
+        .modern-title {
+            font-size: 2rem;
+        }
+
+        .modern-text {
+            font-size: 1rem;
+        }
+
+        .modern-subtext {
+            font-size: 0.9rem;
+        }
+
+        .modern-btn {
+            padding: 10px 20px;
+        }
+
+        .card-body {
+            padding: 3rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .modern-title {
+            font-size: 1.75rem;
+        }
+
+        .modern-text {
+            font-size: 0.95rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+    }
+</style>

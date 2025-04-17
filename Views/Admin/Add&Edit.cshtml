@@ -1,0 +1,75 @@
+﻿@model Product
+
+@{
+    ViewData["Title"] = (Model.Id == 0 ? "Add" : "Edit") + " Product";
+    var categoryList = ViewBag.Categories as List<string>;
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<form asp-action="@(Model.Id == 0 ? "AddProduct" : "EditProduct")"
+      method="post"
+      enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    @if (Model.Id != 0)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Brand" class="control-label"></label>
+        <input asp-for="Brand" class="form-control" />
+        <span asp-validation-for="Brand" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price" class="control-label"></label>
+        <input asp-for="Price" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Upload Product Image</label>
+        <input type="file" name="imageFile" class="form-control" accept="image/*" />
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <div class="form-group mt-3">
+            <label>Current Image</label><br />
+            <img src="@Model.ImageUrl" alt="Product Image" width="150" class="border rounded" />
+        </div>
+    }
+    else if (Model.Id != 0)
+    {
+        <div class="form-group mt-3 text-muted">
+            <small>No image uploaded for this product.</small>
+        </div>
+    }
+
+    <div class="form-group">
+        <label asp-for="Category" class="control-label"></label>
+        <select asp-for="Category" class="form-control" asp-items="@(new SelectList(categoryList))">
+            <option value="">-- Select Category --</option>
+        </select>
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-4">
+        <input type="submit" value="Save" class="btn btn-primary" />
+        <a asp-action="Products" class="btn btn-secondary ms-2">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
