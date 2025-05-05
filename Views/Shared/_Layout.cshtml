@@ -5,29 +5,119 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DUTEG</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- Preload Assets -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap">
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Google Fonts (Poppins) -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-
-    <!-- Site-specific CSS -->
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/DUTEG.styles.css" asp-append-version="true" />
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --dark-bg: #0f172a;
+            --darker-bg: #020617;
+            --card-bg: #1e293b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+            --gradient-primary: linear-gradient(135deg, #3b82f6, #2563eb);
+            --highlight-color: #60a5fa;
+        }
+
         body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            margin: 0;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            font-family: 'Poppins', sans-serif;
-            background-color: #1a1a1a;
-            color: #fff;
+            line-height: 1.6;
+        }
+
+        /* Offcanvas Sidebar - Dark Theme */
+        .offcanvas {
+            background-color: var(--darker-bg) !important;
+            color: var(--text-light) !important;
+            width: 300px;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .offcanvas-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-light) !important;
+            letter-spacing: -0.02em;
             margin: 0;
         }
+
+        .offcanvas-header .btn-close {
+            filter: invert(1) brightness(2) !important; /* Invert colors to make it white */
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+            .offcanvas-header .btn-close:hover {
+                opacity: 1;
+            }
+
+        .offcanvas-body {
+            padding: 1rem 0;
+        }
+
+        .list-group-item {
+            background-color: transparent !important;
+            border: none !important;
+            color: var(--text-muted) !important;
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            margin: 0.25rem 1rem;
+            border-radius: 10px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+            .list-group-item i {
+                font-size: 1.1rem;
+                width: 20px;
+                text-align: center;
+            }
+
+            .list-group-item:hover,
+            .list-group-item:focus {
+                background: rgba(148, 163, 184, 0.05) !important;
+                color: var(--text-light) !important;
+            }
+
+            .list-group-item.active {
+                background: rgba(30, 41, 59, 0.7) !important;
+                color: var(--highlight-color) !important;
+                font-weight: 600;
+                box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+            }
 
         /* Navbar */
         .navbar {
@@ -35,359 +125,472 @@
             top: 0;
             width: 100%;
             z-index: 1030;
-            background: linear-gradient(135deg, #2d2d2d, #1f1f1f);
-            padding: 1rem 1.5rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(16px);
+            padding: 0.75rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
 
         .navbar-brand {
-            font-size: 1.5rem;
+            color: var(--text-light);
+            font-size: 1.4rem;
             font-weight: 700;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.3s ease;
+            margin: 0;
+            transition: all 0.3s ease;
         }
 
             .navbar-brand:hover {
-                color: #00d4ff;
+                color: var(--highlight-color);
+            }
+
+            .navbar-brand img {
+                height: 32px;
+                width: auto;
             }
 
         .nav-link {
-            color: #ccc;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            transition: all 0.3s ease;
+            color: var(--text-muted);
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            margin: 0 0.25rem;
+            transition: var(--transition);
+            border-radius: 8px;
         }
 
-            .nav-link:hover {
-                color: #fff;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 5px;
+            .nav-link:hover,
+            .nav-link:focus {
+                color: var(--text-light);
+                background: rgba(148, 163, 184, 0.05);
             }
 
             .nav-link.active {
-                color: #00d4ff;
-                background: rgba(255, 255, 255, 0.2);
-                border-radius: 5px;
+                color: var(--highlight-color);
+                font-weight: 600;
+                background: rgba(59, 130, 246, 0.08);
             }
 
-        .menu-btn {
-            font-size: 1.5rem;
-            color: #fff;
-            background: none;
-            border: none;
-            padding: 0.5rem;
-            transition: transform 0.3s ease;
+        /* Mobile Navbar Styles (Fixed Positioning Fix) */
+        @@media (max-width: 991.98px) {
+            .navbar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                z-index: 1050;
+            }
+
+                .navbar > .container-fluid {
+                    display: flex; /* Make the container a flex container */
+                    justify-content: space-between; /* Space out items */
+                    align-items: center; /* Vertically align items */
+                }
+
+                    .navbar > .container-fluid > .d-flex.d-lg-none {
+                        display: flex !important; /* Ensure this flex container is visible on mobile */
+                        justify-content: space-between; /* Space out the button and brand */
+                        align-items: center;
+                        width: 100%; /* Take full width */
+                    }
+
+                        .navbar > .container-fluid > .d-flex.d-lg-none > .navbar-toggler {
+                            margin-right: auto; /* Push to the left */
+                        }
+
+                        .navbar > .container-fluid > .d-flex.d-lg-none > .navbar-brand {
+                            margin-left: auto; /* Push to the right */
+                            margin-right: 0; /* Ensure no extra right margin */
+                        }
+                    /* Ensure the brand in the main container is hidden on mobile */
+                    .navbar > .container-fluid > .navbar-brand.d-none.d-lg-block {
+                        display: none !important;
+                    }
+                    /* Ensure the mobile hamburger button is visible */
+                    .navbar > .container-fluid > .navbar-toggler:not(.d-none.d-lg-block) {
+                        display: block !important;
+                    }
         }
 
-            .menu-btn:hover {
-                transform: scale(1.1);
-            }
-
-        /* Admin specific styles */
+        /* Admin Section */
         .admin-nav {
-            background: linear-gradient(135deg, #4a148c, #7b1fa2);
+            margin-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+            margin-bottom: 1rem;
         }
 
-            .admin-nav .nav-link {
-                color: #e1bee7;
+            .admin-nav .admin-label {
+                color: var(--text-muted);
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                font-weight: 600;
+                padding: 0 1.5rem;
+                margin-bottom: 0.75rem;
             }
 
-                .admin-nav .nav-link:hover {
-                    color: #fff;
-                    background: rgba(255, 255, 255, 0.15);
+            .admin-nav .list-group-item {
+                color: #93c5fd !important;
+            }
+
+                .admin-nav .list-group-item:hover {
+                    color: #60a5fa !important;
                 }
 
-                .admin-nav .nav-link.active {
-                    color: #fff;
-                    background: rgba(255, 255, 255, 0.25);
+                .admin-nav .list-group-item.active {
+                    color: #3b82f6 !important;
+                    background: rgba(59, 130, 246, 0.12) !important;
                 }
 
-        /* Offcanvas Sidebar */
-        .offcanvas {
-            background: #3a3a3a;
-            color: #000;
-            width: 280px;
+        /* Buttons */
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            transition: var(--transition);
         }
 
-        .offcanvas-header {
-            background: #2d2d2d;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .offcanvas-title {
-            font-weight: 700;
-            color: #fff;
-        }
-
-        .offcanvas a {
-            color: #000;
-            font-weight: 700;
-            font-size: 1.1rem;
-            padding: 12px 20px;
-            transition: all 0.3s ease;
-            text-shadow: none;
-        }
-
-            .offcanvas a:hover {
-                color: #00d4ff;
-                background: rgba(255, 255, 255, 0.2);
-                padding-left: 25px;
+            .btn-primary:hover {
+                background: var(--primary-hover);
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-lg);
             }
 
-            .offcanvas a.active {
-                color: #00d4ff;
-                background: rgba(255, 255, 255, 0.2);
-                padding-left: 25px;
-            }
-
-        /* Content Wrapper */
-        .content-wrapper {
-            flex: 1;
-            padding: 80px 20px 60px;
-            background: transparent;
+        #admin-btn {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            font-weight: 600;
+            transition: var(--transition);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
         }
 
-        /* Floating Cart Button */
+            #admin-btn:hover {
+                background: rgba(59, 130, 246, 0.2);
+                color: #3b82f6;
+                border-color: rgba(59, 130, 246, 0.3);
+                transform: translateY(-2px);
+            }
+
+        #cart-btn {
+            background: var(--gradient-primary);
+            border: none;
+            font-weight: 600;
+            position: relative;
+            transition: var(--transition);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+        }
+
+            #cart-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-lg);
+            }
+
+            #cart-btn .badge {
+                background-color: #ef4444;
+                font-size: 0.7rem;
+                padding: 0.3rem 0.45rem;
+                position: absolute;
+                top: -0.5rem;
+                right: -0.5rem;
+                border: 2px solid var(--darker-bg);
+                border-radius: 50%;
+                min-width: 1.5rem;
+            }
+
+        /* Floating Cart */
         #floating-cart {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 2rem;
+            right: 2rem;
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(90deg, #007bff, #00d4ff);
-            color: #fff;
-            border: none;
+            background: var(--gradient-primary);
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
-            transition: all 0.3s ease;
-            z-index: 1055;
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+            z-index: 1050;
+            transition: var(--transition);
+            display: none;
         }
 
-            #floating-cart:hover {
-                transform: scale(1.1);
-                background: linear-gradient(90deg, #0056b3, #00b7ff);
-            }
-
-            #floating-cart .badge {
-                position: absolute;
-                top: 5px;
-                right: 5px;
-                background-color: #dc3545;
-                font-size: 0.8rem;
-                padding: 5px 8px;
-                border-radius: 50%;
-                box-shadow: 0 0 0 2px #fff;
-            }
-
-        /* Cart Button in Navbar */
-        #cart-btn {
-            background: linear-gradient(90deg, #007bff, #00d4ff);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 25px;
-            color: #fff;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-            #cart-btn:hover {
-                transform: scale(1.05);
-                background: linear-gradient(90deg, #0056b3, #00b7ff);
-            }
-
-            #cart-btn .badge {
-                background-color: #dc3545;
-                font-size: 0.7rem;
-                padding: 4px 6px;
-                border-radius: 50%;
-                position: absolute;
-                top: -5px;
-                right: -5px;
-            }
-
-        /* Admin Button */
-        #admin-btn {
-            background: linear-gradient(90deg, #9c27b0, #e91e63);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 25px;
-            color: #fff;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin-right: 10px;
-        }
-
-            #admin-btn:hover {
-                transform: scale(1.05);
-                background: linear-gradient(90deg, #7b1fa2, #c2185b);
-            }
-
-        /* Responsive Adjustments */
         @@media (max-width: 768px) {
-            #cart-btn, #admin-btn {
-                display: none;
-            }
-
             #floating-cart {
                 display: flex;
             }
-
-            .content-wrapper {
-                padding: 70px 15px 60px;
-            }
         }
 
-        @@media (min-width: 992px) {
-            .content-wrapper {
-                padding: 20px;
-            }
-
-            #floating-cart {
-                display: none;
-            }
+        #floating-cart:hover {
+            transform: translateY(-5px) scale(1.05);
         }
+
+        #floating-cart .badge {
+            background-color: #ef4444;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.45rem;
+            position: absolute;
+            top: 0;
+            right: 0;
+            border: 2px solid var(--darker-bg);
+            border-radius: 50%;
+            min-width: 1.5rem;
+        }
+
+        /* Content */
+        .content-wrapper {
+            flex: 1;
+            padding: 6rem 2rem 3rem;
+            background: var(--dark-bg);
+        }
+
+        /* Navbar Profile Section */
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+            .profile-section:hover {
+                background: rgba(148, 163, 184, 0.05);
+            }
 
         /* Animations */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @@keyframes bounce {
-            0% {
+            0%, 100% {
                 transform: scale(1);
             }
 
-            30% {
-                transform: scale(1.3);
-            }
-
-            60% {
-                transform: scale(0.9);
-            }
-
-            100% {
-                transform: scale(1);
+            50% {
+                transform: scale(1.2);
             }
         }
 
         .cart-bounce {
             animation: bounce 0.4s ease;
         }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease-out;
+        }
+
+        /* Responsive */
+        @@media (max-width: 992px) {
+            .navbar {
+                padding: 0.75rem 1.25rem;
+            }
+
+            .content-wrapper {
+                padding: 5rem 1.5rem 3rem;
+            }
+
+            #cart-btn, #admin-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .content-wrapper {
+                padding: 4.5rem 1rem 2rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+
+            .profile-section {
+                padding: 0.25rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Offcanvas Sidebar -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="sidebarLabel">Menu</h5>
-            <button id="sidebar-close-btn" type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <h1 class="sidebar-brand" id="sidebarLabel">DUTEG</h1>
+            <!-- Close Button -->
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
             <div class="list-group list-group-flush">
-                <a href="@Url.Action("Home", "Home")" class="list-group-item list-group-item-action @(ViewData["Title"] == "Home" ? "active" : "")">Home</a>
-                <a href="@Url.Action("Products", "Home")" class="list-group-item list-group-item-action @(ViewData["Title"] == "Categories" ? "active" : "")">Products</a>
-                <a href="@Url.Action("RefundPolicy", "Home")" class="list-group-item list-group-item-action @(ViewData["Title"] == "Refund Policy" ? "active" : "")">Refund Policy</a>
-                <a href="@Url.Action("Contact", "Home")" class="list-group-item list-group-item-action @(ViewData["Title"] == "Contact" ? "active" : "")">Contact</a>
-                <a href="@Url.Action("AboutUs", "Home")" class="list-group-item list-group-item-action @(ViewData["Title"] == "About Us" ? "active" : "")">About Us</a>
-                <div class="admin-nav mt-2">
-                    <a href="@(User.Identity.IsAuthenticated && User.IsInRole("Admin") ? Url.Action("Products", "Admin") : Url.Page("/Account/Login", new { area = "Identity" }))" class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" ? "active" : "")">Admin</a>
+                <a href="@Url.Action("Home", "Home")" class="list-group-item list-group-item-action @(ViewData["Title"] == "Home" ? "active" : "")">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="@Url.Action("Products", "Home")" class="list-group-item list-group-item-action @(ViewData["Title"] == "Categories" ? "active" : "")">
+                    <i class="fas fa-box-open"></i> Products
+                </a>
+                <a href="@Url.Action("RefundPolicy", "Home")" class="list-group-item list-group-item-action @(ViewData["Title"] == "Refund Policy" ? "active" : "")">
+                    <i class="fas fa-exchange-alt"></i> Refund Policy
+                </a>
+                <a href="@Url.Action("AboutUs", "Home")" class="list-group-item list-group-item-action @(ViewData["Title"] == "About Us" ? "active" : "")">
+                    <i class="fas fa-info-circle"></i> About Us
+                </a>
+                <a href="@Url.Action("Contact", "Home")" class="list-group-item list-group-item-action @(ViewData["Title"] == "Contact" ? "active" : "")">
+                    <i class="fas fa-envelope"></i> Contact
+                </a>
+
+                <div class="admin-nav">
+                    <div class="admin-label">Administration</div>
+                    <a href="@(User.Identity.IsAuthenticated && User.IsInRole("Admin") ? Url.Action("Products", "Admin") : Url.Page("/Account/Login", new { area = "Identity" }))"
+                       class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" ? "active" : "")">
+                        <i class="fas fa-user-shield"></i> Admin Panel
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <button class="menu-btn d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar">
+
+            <!-- Sidebar Hamburger Icon -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
                 <i class="fas fa-bars"></i>
             </button>
-            <a class="navbar-brand" href="@Url.Action("Home", "Home")">DUTEG</a>
+
+            <a class="navbar-brand m-0" href="@Url.Action("Home", "Home")">
+                DUTEG
+            </a>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link @(ViewData["Title"] == "Home" ? "active" : "")" href="@Url.Action("Home", "Home")">Home</a>
+                        <a class="nav-link @(ViewData["Title"] == "Home" ? "active" : "")" href="@Url.Action("Home", "Home")">
+                            <i class="fas fa-home me-1 d-none d-lg-inline-block"></i> Home
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewData["Title"] == "Categories" ? "active" : "")" href="@Url.Action("Products", "Home")">Products</a>
+                        <a class="nav-link @(ViewData["Title"] == "Products" ? "active" : "")" href="@Url.Action("Products", "Home")">
+                            <i class="fas fa-box-open me-1 d-none d-lg-inline-block"></i> Products
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewData["Title"] == "Refund Policy" ? "active" : "")" href="@Url.Action("RefundPolicy", "Home")">Refund Policy</a>
+                        <a class="nav-link @(ViewData["Title"] == "Refund Policy" ? "active" : "")" href="@Url.Action("RefundPolicy", "Home")">
+                            <i class="fas fa-exchange-alt me-1 d-none d-lg-inline-block"></i> Refund Policy
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewData["Title"] == "Contact" ? "active" : "")" href="@Url.Action("Contact", "Home")">Contact</a>
+                        <a class="nav-link @(ViewData["Title"] == "About Us" ? "active" : "")" href="@Url.Action("AboutUs", "Home")">
+                            <i class="fas fa-info-circle me-1 d-none d-lg-inline-block"></i> About Us
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewData["Title"] == "About Us" ? "active" : "")" href="@Url.Action("AboutUs", "Home")">About Us</a>
+                        <a class="nav-link @(ViewData["Title"] == "Contact" ? "active" : "")" href="@Url.Action("Contact", "Home")">
+                            <i class="fas fa-envelope me-1 d-none d-lg-inline-block"></i> Contact
+                        </a>
                     </li>
                 </ul>
-                <div class="d-flex">
-                    <a href="@(User.Identity.IsAuthenticated && User.IsInRole("Admin") ? Url.Action("Products", "Admin") : Url.Page("/Account/Login", new { area = "Identity" }))" id="admin-btn" class="btn">
-                        <i class="fas fa-user-shield"></i> Admin
+                <div class="d-flex align-items-center gap-3">
+                    <a href="@(User.Identity.IsAuthenticated && User.IsInRole("Admin") ? Url.Action("Products", "Admin") : Url.Page("/Account/Login", new { area = "Identity" }))"
+                       id="admin-btn" class="btn btn-sm">
+                        <i class="fas fa-user-shield me-1"></i> Admin
                     </a>
-                    <button id="cart-btn" class="btn position-relative cart-btn">
-                        <i class="fas fa-shopping-cart"></i>
+                    <button id="cart-btn" class="btn btn-primary btn-sm position-relative">
+                        <i class="fas fa-shopping-cart me-1"></i>
                         <span id="cart-count" class="badge">0</span>
                     </button>
-                    <partial name="_LoginPartial" />
+                    <div class="profile-section">
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Floating Cart Button (Mobile) -->
-    <button id="floating-cart" class="btn position-fixed shadow">
+    <button id="floating-cart" class="btn shadow-lg">
         <i class="fas fa-shopping-cart"></i>
         <span id="floating-cart-count" class="badge">0</span>
     </button>
 
-    <!-- Main Content -->
-    <div class="content-wrapper">
+    <div class="content-wrapper fade-in">
         <main role="main" class="container-fluid">
             @RenderBody()
         </main>
     </div>
 
-    <!-- Scripts -->
+    <footer class="bg-dark text-light py-3 mt-auto">
+        <div class="container text-center">
+            &copy; @DateTime.Now.Year DUTEG - All Rights Reserved.
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
         $(document).ready(function () {
+            // Update cart count
             function updateCartCount() {
                 $.get('/ShoppingCart/GetCartCount', function (data) {
-                    $('#cart-count').text(data.count).addClass('cart-bounce');
-                    $('#floating-cart-count').text(data.count).addClass('cart-bounce');
+                    $('#cart-count, #floating-cart-count').text(data.count).addClass('cart-bounce');
                     setTimeout(() => {
-                        $('#cart-count').removeClass('cart-bounce');
-                        $('#floating-cart-count').removeClass('cart-bounce');
+                        $('.badge').removeClass('cart-bounce');
                     }, 400);
                 }).fail(function () {
-                    console.error("Failed to fetch cart count.");
+                    console.error("Failed to fetch cart count");
                 });
             }
 
+            // Cart button click handlers
             $('#cart-btn, #floating-cart').click(function () {
                 window.location.href = '/ShoppingCart/ViewCart';
             });
 
+            // Initialize cart count
             updateCartCount();
 
-            // Dynamic close button color
-            const sidebar = document.querySelector(".offcanvas");
-            const closeBtn = document.getElementById("sidebar-close-btn");
-            if (sidebar && closeBtn) {
-                const bgColor = window.getComputedStyle(sidebar).backgroundColor;
-                const rgb = bgColor.match(/\d+/g);
-                if (rgb) {
-                    const brightness = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
-                    closeBtn.classList.toggle("btn-close-white", brightness < 128);
-                    closeBtn.classList.toggle("btn-close-black", brightness >= 128);
+            // Add smooth transitions when navigating
+            $('a').not('[href^="#"]').not('[target="_blank"]').click(function(e) {
+                e.preventDefault();
+                var href = $(this).attr('href');
+                $('.content-wrapper').addClass('fade-out');
+                setTimeout(function() {
+                    window.location.href = href;
+                }, 300);
+            });
+
+            // Navbar scroll effect
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 50) {
+                    $('.navbar').css('padding', '0.5rem 2rem');
+                } else {
+                    $('.navbar').css('padding', '0.75rem 2rem');
                 }
-            }
+            });
         });
     </script>
 

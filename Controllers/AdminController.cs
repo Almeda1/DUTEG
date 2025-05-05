@@ -160,7 +160,7 @@ namespace DUTEG.Controllers
 
         private List<string> GetCategoryList()
         {
-            return new List<string> { "Pots", "Airfryers", "Blenders", "Cutleries", "Dishwashers" };
+            return new List<string> { "Pots", "Airfryers", "Blenders", "Cutleries", "Dish Racks", "Pressure Cookers" };
         }
     }
 }

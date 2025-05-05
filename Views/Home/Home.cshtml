@@ -2,203 +2,182 @@
     ViewData["Title"] = "DUTEG";
 }
 
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <!-- Preload Background Image -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Premium Retail Solutions</title>
+
+    <!-- Preload Assets -->
     <link rel="preload" as="image" href="/images/homebackground1.jpg">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    <!-- Google Fonts (Poppins) -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Font Awesome for Icons -->
-    <script src="https://kit.fontawesome.com/your-kit-id.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Animate.css for animations -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 
-<body class="d-flex align-items-center justify-content-center min-vh-100">
+<body>
+    <!-- Hero Section -->
     <div class="hero-section">
-        <div class="container text-center">
-            <div class="content-wrapper animate__animated animate__fadeIn">
-                <h1 class="display-3 fw-bold text-white mb-4">@ViewData["Title"]</h1>
-
-                <!-- We Are Open Section -->
-                <div class="info-card shadow-lg">
-                    <h2 class="fw-bold text-white mb-3">We Are Open</h2>
-                    <p class="fs-5 text-light">Monday - Saturday: 8 AM - 6 PM</p>
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <!-- Main Title -->
+                <div class="title-wrapper" data-aos="fade-down" data-aos-duration="800">
+                    <h1 class="main-title">
+                        <span class="title-text">DUTEG</span>
+                    </h1>
+                    <p class="tagline" data-aos="fade-up" data-aos-delay="300">Premium Retail Solutions</p>
                 </div>
 
-                <!-- Location Section -->
-                <div class="info-card shadow-lg mt-5">
-                    <h2 class="fw-bold text-white mb-3">Location</h2>
-                    <p class="fs-5 text-light mb-4">GQG6+F3Q, Okumagba 2, Warri 332104, Delta</p>
-                    <div class="map-container shadow-lg">
-                        <iframe width="100%"
-                                height="100%"
-                                frameborder="0"
-                                style="border:0"
-                                loading="lazy"
-                                allowfullscreen
-                                referrerpolicy="no-referrer-when-downgrade"
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3939.098276789956!2d5.759673373622633!3d5.528896294769962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1041adf47c5e8c31%3A0x992ec791f68a3f6!2sGQG6%2BF3Q%2C%20Okumagba%202%2C%20Warri%20332104%2C%20Delta%2C%20Nigeria!5e0!3m2!1sen!2sng!4v1711023456789!5m2!1sen!2sng">
-                        </iframe>
-                        <p class="map-fallback text-light">Unable to load map. Please check your connection.</p>
+                <!-- Info Cards Grid -->
+                <div class="info-grid">
+                    <!-- Hours Card -->
+                    <div class="info-card" data-aos="fade-right" data-aos-delay="400">
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h2>Business Hours</h2>
+                        <div class="card-content">
+                            <p><strong>Monday - Saturday</strong></p>
+                            <p>8:00 AM - 6:00 PM</p>
+                        </div>
+                    </div>
+
+                    <!-- Location Card -->
+                    <div class="info-card" data-aos="fade-left" data-aos-delay="600">
+                        <div class="card-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h2>Our Location</h2>
+                        <div class="card-content">
+                            <p>GQG6+F3Q, Okumagba 2</p>
+                            <p>Warri 332104, Delta</p>
+                        </div>
+                        <div class="map-container">
+                            <iframe width="100%" height="100%" frameborder="0" style="border:0" loading="lazy" allowfullscreen
+                                    aria-label="Google Map of DUTEG Location"
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3939.098276789956!2d5.759673373622633!3d5.528896294769962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1041adf47c5e8c31%3A0x992ec791f68a3f6!2sGQG6%2BF3Q%2C%20Okumagba%202%2C%20Warri%20332104%2C%20Delta%2C%20Nigeria!5e0!3m2!1sen!2sng!4v1711023456789!5m2!1sen!2sng">
+                            </iframe>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Call to Action Button -->
-                <a href="/Home/Products" class="btn btn-primary btn-lg modern-btn mt-4">
-                    Shop Now <i class="fas fa-arrow-right ms-2"></i>
-                </a>
+                <!-- CTA Button -->
+                <div class="cta-wrapper" data-aos="fade-up" data-aos-delay="800">
+                    <a href="/Home/Products" class="btn btn-primary btn-lg cta-button" role="button" aria-label="Explore Products">
+                        <span>Explore Products</span>
+                        <i class="fas fa-chevron-right ms-2"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS (for potential interactivity) -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize animations
+        AOS.init({
+            once: true,
+            duration: 800,
+            easing: 'ease-out-quart'
+        });
+    </script>
 </body>
+</html>
 
 <style>
+    :root {
+        /* Updated colors for better vibrancy */
+        --primary-color: #2563eb;
+        --primary-light: #3b82f6;
+        --text-light: #f8fafc;
+        --text-muted: #94a3b8;
+        --dark-overlay: rgba(0, 0, 0, 0.75);
+        --card-bg: rgba(15, 23, 42, 0.9);
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
     body {
-        background-image: url('/images/homebackground1.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        margin: 0;
-        padding: 0;
         font-family: 'Poppins', sans-serif;
-        min-height: 100vh;
+        color: var(--text-light);
+        overflow-x: hidden;
     }
 
     .hero-section {
         position: relative;
         min-height: 100vh;
-        background: rgba(0, 0, 0, 0.5);
+        background: url('/images/homebackground1.jpg') no-repeat center center;
+        background-size: cover;
         display: flex;
         align-items: center;
-        justify-content: center;
+        padding: 2rem;
     }
 
-    .content-wrapper {
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(10px);
-        padding: 40px;
-        border-radius: 15px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        max-width: 800px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    .display-3 {
-        font-size: 3.5rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    }
-
-    .modern-btn {
-        padding: 12px 30px;
-        border-radius: 50px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        background: linear-gradient(90deg, #007bff, #00d4ff);
-        border: none;
-        transition: all 0.3s ease;
-    }
-
-        .modern-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
-            background: linear-gradient(90deg, #0056b3, #00b7ff);
-        }
-
-    .info-card {
-        background: rgba(0, 0, 0, 0.7);
-        padding: 25px;
-        border-radius: 15px;
-        transition: transform 0.3s ease;
-    }
-
-        .info-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-        }
-
-    .map-container {
-        position: relative;
-        overflow: hidden;
-        border-radius: 10px;
-        height: 300px;
-        width: 100%;
-        min-height: 200px;
-        background: rgba(0, 0, 0, 0.3); /* Fallback background */
-    }
-
-        .map-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-    .map-fallback {
-        display: none;
+    .overlay {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
+        top: 0;
+        left: 0;
         width: 100%;
+        height: 100%;
+        background: var(--dark-overlay);
+        backdrop-filter: blur(4px);
     }
 
-    .map-container:has(iframe[src=""]) .map-fallback,
-    .map-container:not(:has(iframe[src])) .map-fallback {
-        display: block;
+    .container {
+        z-index: 2;
     }
 
-    /* Animations */
-    .animate__fadeIn {
-        animation: fadeIn 1s ease-in-out;
+    .title-text {
+        background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 100%);
+        -webkit-background-clip: text;
+        color: transparent;
     }
 
-    @@keyframes fadeIn {
-        0% {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .info-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.4);
     }
 
-    /* Responsive Adjustments */
+    .cta-button:hover i {
+        transform: translateX(8px);
+    }
+
     @@media (max-width: 768px) {
-        .display-3 {
-            font-size: 2.5rem;
-        }
+        .main-title
 
-        .content-wrapper {
-            padding: 20px;
-        }
-
-        .info-card {
-            padding: 20px;
-        }
-
-        .map-container {
-            height: 200px;
-        }
-
-        .modern-btn {
-            padding: 10px 25px;
-            font-size: 0.9rem;
-        }
+    {
+        font-size: 3.5rem;
     }
-</style> 
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    @@media (max-width: 576px) {
+        .hero-section
+
+    {
+        padding: 1rem;
+    }
+
+    .main-title {
+        font-size: 2.75rem;
+    }
+
+    }
+</style>

@@ -373,21 +373,29 @@
         }
 
         <div id="deleteModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirm Deletion</h5>
-                    <button type="button" class="close-button">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete <strong><span id="productName"></span></strong>?</p>
-                    <p class="text-danger">This action cannot be undone.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm modern-btn same-size-btn close-button">Cancel</button>
-                    <button type="button" id="confirmDelete" class="btn btn-danger btn-sm modern-btn same-size-btn">Delete</button>
-                </div>
+            <div class="modal-content bg-dark text-white border border-danger shadow-lg">
+                <form id="deleteForm">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold text-danger">
+                            <i class="fas fa-triangle-exclamation me-2"></i> Confirm Deletion
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <p class="fs-6">You're about to delete <strong><span id="productName"></span></strong>.</p>
+                        <p class="text-danger mb-0">This action is permanent and cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer border-0 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-light modern-btn close-button">
+                            <i class="fas fa-times me-1"></i> Cancel
+                        </button>
+                        <button type="button" id="confirmDelete" class="btn btn-danger modern-btn">
+                            <i class="fas fa-trash-alt me-1"></i> Delete
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

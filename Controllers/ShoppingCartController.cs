@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DUTEG.Controllers
 {
     public class ShoppingCartController : Controller
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<ShoppingCartController> _logger; // Add logger
+        private readonly ILogger<ShoppingCartController> _logger;
 
         public ShoppingCartController(AppDbContext context, ILogger<ShoppingCartController> logger)
         {
@@ -29,16 +30,14 @@ namespace DUTEG.Controllers
         }
 
         [HttpPost]
-        public JsonResult AddToCart(int id)
+        public async Task<JsonResult> AddToCart(int id)
         {
             _logger.LogInformation("AddToCart called for ProductId: {Id}", id);
-            if (_context == null)
-            {
-                _logger.LogError("AppDbContext is null");
-                return Json(new { success = false, message = "Database context is unavailable." });
-            }
 
-            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+            var product = await _context.Products
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (product == null)
             {
                 _logger.LogWarning("Product not found for Id: {Id}", id);
@@ -46,13 +45,12 @@ namespace DUTEG.Controllers
             }
 
             var userId = GetUserIdentifier();
-            var existingItem = _context.CartItems
-                .FirstOrDefault(c => c.ProductId == id && c.UserIdentifier == userId);
+            var item = await _context.CartItems
+                .FirstOrDefaultAsync(c => c.ProductId == id && c.UserIdentifier == userId);
 
-            if (existingItem != null)
+            if (item != null)
             {
-                existingItem.Quantity++;
-                _logger.LogInformation("Incremented quantity for CartItem: {ProductId}, User: {UserId}", id, userId);
+                item.Quantity++;
             }
             else
             {
@@ -62,12 +60,11 @@ namespace DUTEG.Controllers
                     Quantity = 1,
                     UserIdentifier = userId
                 });
-                _logger.LogInformation("Added new CartItem: {ProductId}, User: {UserId}", id, userId);
             }
 
             try
             {
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -75,104 +72,88 @@ namespace DUTEG.Controllers
                 return Json(new { success = false, message = "Error updating cart." });
             }
 
-            var totalCount = _context.CartItems
+            var count = await _context.CartItems
                 .Where(c => c.UserIdentifier == userId)
-                .Sum(c => c.Quantity);
+                .SumAsync(c => c.Quantity);
 
-            return Json(new { success = true, count = totalCount });
+            return Json(new { success = true, count });
         }
 
         [HttpGet]
-        public IActionResult ViewCart()
+        public async Task<IActionResult> ViewCart()
         {
             _logger.LogInformation("ViewCart called");
-            if (_context == null)
-            {
-                _logger.LogError("AppDbContext is null");
-                return StatusCode(500, "Database context is unavailable.");
-            }
 
             var userId = GetUserIdentifier();
-            var cart = _context.CartItems
+            var cart = await _context.CartItems
+                .AsNoTracking()
                 .Include(c => c.Product)
                 .Where(c => c.UserIdentifier == userId)
-                .ToList();
+                .ToListAsync();
 
             return View(cart);
         }
 
         [HttpPost]
-        public JsonResult UpdateCart(int id, int change)
+        public async Task<JsonResult> UpdateCart(int id, int change)
         {
             _logger.LogInformation("UpdateCart called for ProductId: {Id}, Change: {Change}", id, change);
-            if (_context == null)
-            {
-                _logger.LogError("AppDbContext is null");
-                return Json(new { success = false, message = "Database context is unavailable." });
-            }
 
             var userId = GetUserIdentifier();
-            var item = _context.CartItems
-                .FirstOrDefault(c => c.ProductId == id && c.UserIdentifier == userId);
+            var item = await _context.CartItems
+                .Include(c => c.Product)
+                .FirstOrDefaultAsync(c => c.ProductId == id && c.UserIdentifier == userId);
 
-            if (item != null)
+            if (item == null)
             {
-                item.Quantity += change;
-                if (item.Quantity <= 0)
-                {
-                    _context.CartItems.Remove(item);
-                    _logger.LogInformation("Removed CartItem: {ProductId}, User: {UserId}", id, userId);
-                }
-
-                try
-                {
-                    _context.SaveChanges();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error saving cart update for ProductId: {Id}", id);
-                    return Json(new { success = false, message = "Error updating cart." });
-                }
-
-                var cart = _context.CartItems
-                    .Include(c => c.Product)
-                    .Where(c => c.UserIdentifier == userId)
-                    .ToList();
-
-                return Json(new
-                {
-                    success = true,
-                    quantity = item.Quantity,
-                    itemTotal = item.Product != null ? item.Product.Price * item.Quantity : 0,
-                    total = cart.Sum(c => c.Product != null ? c.Product.Price * c.Quantity : 0)
-                });
+                _logger.LogWarning("CartItem not found for ProductId: {Id}, User: {UserId}", id, userId);
+                return Json(new { success = false, message = "Item not found in cart." });
             }
 
-            _logger.LogWarning("CartItem not found for ProductId: {Id}, User: {UserId}", id, userId);
-            return Json(new { success = false, message = "Item not found in cart." });
+            item.Quantity += change;
+            if (item.Quantity <= 0)
+            {
+                _context.CartItems.Remove(item);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating cart for ProductId: {Id}", id);
+                return Json(new { success = false, message = "Error updating cart." });
+            }
+
+            var total = await _context.CartItems
+                .Where(c => c.UserIdentifier == userId)
+                .SumAsync(c => c.Product.Price * c.Quantity);
+
+            return Json(new
+            {
+                success = true,
+                quantity = item.Quantity,
+                itemTotal = item.Product.Price * item.Quantity,
+                total
+            });
         }
 
         [HttpPost]
-        public JsonResult RemoveFromCart(int id)
+        public async Task<JsonResult> RemoveFromCart(int id)
         {
             _logger.LogInformation("RemoveFromCart called for ProductId: {Id}", id);
-            if (_context == null)
-            {
-                _logger.LogError("AppDbContext is null");
-                return Json(new { success = false, message = "Database context is unavailable." });
-            }
 
             var userId = GetUserIdentifier();
-            var item = _context.CartItems
-                .FirstOrDefault(c => c.ProductId == id && c.UserIdentifier == userId);
+            var item = await _context.CartItems
+                .FirstOrDefaultAsync(c => c.ProductId == id && c.UserIdentifier == userId);
 
             if (item != null)
             {
                 _context.CartItems.Remove(item);
                 try
                 {
-                    _context.SaveChanges();
-                    _logger.LogInformation("Removed CartItem: {ProductId}, User: {UserId}", id, userId);
+                    await _context.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
@@ -181,39 +162,32 @@ namespace DUTEG.Controllers
                 }
             }
 
-            var cart = _context.CartItems
-                .Include(c => c.Product)
+            var cartData = await _context.CartItems
                 .Where(c => c.UserIdentifier == userId)
-                .ToList();
+                .Select(c => new { c.Quantity, c.Product.Price })
+                .ToListAsync();
 
-            return Json(new
-            {
-                success = true,
-                count = cart.Sum(c => c.Quantity),
-                total = cart.Sum(c => c.Product != null ? c.Product.Price * c.Quantity : 0)
-            });
+            var count = cartData.Sum(c => c.Quantity);
+            var total = cartData.Sum(c => c.Price * c.Quantity);
+
+            return Json(new { success = true, count, total });
         }
 
         [HttpPost]
-        public JsonResult ClearCart()
+        public async Task<JsonResult> ClearCart()
         {
             _logger.LogInformation("ClearCart called");
-            if (_context == null)
-            {
-                _logger.LogError("AppDbContext is null");
-                return Json(new { success = false, message = "Database context is unavailable." });
-            }
 
             var userId = GetUserIdentifier();
-            var items = _context.CartItems
+            var items = await _context.CartItems
                 .Where(c => c.UserIdentifier == userId)
-                .ToList();
+                .ToListAsync();
 
             _context.CartItems.RemoveRange(items);
+
             try
             {
-                _context.SaveChanges();
-                _logger.LogInformation("Cleared cart for User: {UserId}", userId);
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -225,21 +199,15 @@ namespace DUTEG.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetCartCount()
+        public async Task<JsonResult> GetCartCount()
         {
             _logger.LogInformation("GetCartCount called");
-            if (_context == null)
-            {
-                _logger.LogError("AppDbContext is null");
-                return Json(new { count = 0 });
-            }
 
             var userId = GetUserIdentifier();
-            var count = _context.CartItems
+            var count = await _context.CartItems
                 .Where(c => c.UserIdentifier == userId)
-                .Sum(c => c.Quantity);
+                .SumAsync(c => c.Quantity);
 
-            _logger.LogInformation("Cart count for User: {UserId} is {Count}", userId, count);
             return Json(new { count });
         }
     }

@@ -3,72 +3,89 @@
 @{
     ViewData["Title"] = (Model.Id == 0 ? "Add" : "Edit") + " Product";
     var categoryList = ViewBag.Categories as List<string>;
+    bool isEdit = Model.Id != 0;
 }
 
-<h1 class="mb-4">@ViewData["Title"]</h1>
+<div class="container mt-5">
+    <div class="card shadow rounded-4 p-4">
+        <h2 class="mb-4 text-primary">@ViewData["Title"]</h2>
 
-<form asp-action="@(Model.Id == 0 ? "AddProduct" : "EditProduct")"
-      method="post"
-      enctype="multipart/form-data">
-    @Html.AntiForgeryToken()
+        <form asp-action="@(isEdit ? "EditProduct" : "AddProduct")"
+              method="post"
+              enctype="multipart/form-data"
+              class="needs-validation" novalidate>
+            @Html.AntiForgeryToken()
 
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    @if (Model.Id != 0)
-    {
-        <input type="hidden" asp-for="Id" />
-    }
+            @if (isEdit)
+            {
+                <input type="hidden" asp-for="Id" />
+            }
 
-    <div class="form-group">
-        <label asp-for="Name" class="control-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Name" class="form-label">Product Name</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Brand" class="form-label">Brand</label>
+                    <input asp-for="Brand" class="form-control" />
+                    <span asp-validation-for="Brand" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Price" class="form-label">Price (₦)</label>
+                    <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="Price" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Quantity" class="form-label">Stock Quantity</label>
+                    <input asp-for="Quantity" class="form-control" type="number" />
+                    <span asp-validation-for="Quantity" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Category" class="form-label">Category</label>
+                    <select asp-for="Category" class="form-select" asp-items="@(new SelectList(categoryList))">
+                        <option value="">-- Select Category --</option>
+                    </select>
+                    <span asp-validation-for="Category" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Product Image</label>
+                    <input type="file" name="imageFile" class="form-control" accept="image/*" capture="environment" />
+                    <div class="form-text">You can take a photo or choose one from your device.</div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="col-12">
+                        <label class="form-label">Current Image</label><br />
+                        <img src="@Model.ImageUrl" alt="Product Image" class="img-thumbnail" style="max-width: 200px;" />
+                    </div>
+                }
+                else if (isEdit)
+                {
+                    <div class="col-12 text-muted small">
+                        <i>No image uploaded for this product.</i>
+                    </div>
+                }
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-save me-1"></i> Save
+                </button>
+                <a asp-action="Products" class="btn btn-outline-secondary px-4">Cancel</a>
+            </div>
+        </form>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Brand" class="control-label"></label>
-        <input asp-for="Brand" class="form-control" />
-        <span asp-validation-for="Brand" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Price" class="control-label"></label>
-        <input asp-for="Price" class="form-control" type="number" step="0.01" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label>Upload Product Image</label>
-        <input type="file" name="imageFile" class="form-control" accept="image/*" />
-    </div>
-
-    @if (!string.IsNullOrEmpty(Model.ImageUrl))
-    {
-        <div class="form-group mt-3">
-            <label>Current Image</label><br />
-            <img src="@Model.ImageUrl" alt="Product Image" width="150" class="border rounded" />
-        </div>
-    }
-    else if (Model.Id != 0)
-    {
-        <div class="form-group mt-3 text-muted">
-            <small>No image uploaded for this product.</small>
-        </div>
-    }
-
-    <div class="form-group">
-        <label asp-for="Category" class="control-label"></label>
-        <select asp-for="Category" class="form-control" asp-items="@(new SelectList(categoryList))">
-            <option value="">-- Select Category --</option>
-        </select>
-        <span asp-validation-for="Category" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mt-4">
-        <input type="submit" value="Save" class="btn btn-primary" />
-        <a asp-action="Products" class="btn btn-secondary ms-2">Cancel</a>
-    </div>
-</form>
+</div>
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")

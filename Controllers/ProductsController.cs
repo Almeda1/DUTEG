@@ -32,6 +32,30 @@ namespace DUTEG.Controllers
             return View(products);
         }
 
+        public IActionResult PressureCookers()
+        {
+            var products = _context.Products
+                .Where(p => p.Category == "Pressure Cookers")
+                .ToList();
+            return View(products);
+        }
+
+        public IActionResult Blenders()
+        {
+            var products = _context.Products
+                .Where(p => p.Category == "Blenders")
+                .ToList();
+            return View(products);
+        }
+
+        public IActionResult DishRacks()
+        {
+            var products = _context.Products
+                .Where(p => p.Category == "Dish Racks")
+                .ToList();
+            return View(products);
+        }
+
         [HttpGet]
         public IActionResult Create()
         {
